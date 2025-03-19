@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { convert } from '@/lib/conversion';
 import { UNITS } from '@/lib/constants';
 import { Unit, ConversionResult } from '@/lib/types';
@@ -11,10 +11,56 @@ export default function UnitConverter() {
   const [result, setResult] = useState<ConversionResult | null>(null);
   const [error, setError] = useState<string>('');
   const [showLegend, setShowLegend] = useState(false);
+  const [debouncedValue, setDebouncedValue] = useState<string>('');
+
+  // Debounce the input value
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [value]);
+
+  // Handle the debounced value
+  useEffect(() => {
+    if (debouncedValue.trim()) {
+      const { unit, error } = detectUnit(debouncedValue);
+      setDetectedUnit(unit);
+      setError(error || '');
+
+      if (unit) {
+        const numericValue = parseFloat(debouncedValue.replace(/[^0-9.-]/g, ''));
+        if (!isNaN(numericValue)) {
+          const result = convert(numericValue, unit);
+          setResult(result[0]);
+          setError(''); // Clear any previous errors
+        } else {
+          setResult(null);
+        }
+      } else {
+        setResult(null);
+      }
+    } else {
+      setDetectedUnit('');
+      setError('');
+      setResult(null);
+    }
+  }, [debouncedValue]);
 
   const detectUnit = (input: string): { unit: string; error?: string } => {
     // Remove any whitespace and convert to lowercase for matching
     const cleanInput = input.trim().toLowerCase();
+
+    // Check for metric units first
+    const metricUnits = ['km', 'm', 'cm', 'kg', 'g', 'mg', 'l', 'ml', '°c'];
+    const lastWord = cleanInput.split(/\s+/).pop();
+    if (lastWord && metricUnits.some(metric => lastWord.endsWith(metric))) {
+      return {
+        unit: '',
+        error: `We refuse to convert back to those archaic imperial units. Join the rest of the world and embrace the metric system! (Unless you're measuring your freedom, which is infinite and can't be measured in any system. Also, we're not responsible for any confusion caused by using base-12 measurements)`
+      };
+    }
 
     // Filter out units that are their own base unit
     const convertibleUnits = UNITS.filter(unit => unit.symbol !== unit.baseUnit);
@@ -45,7 +91,6 @@ export default function UnitConverter() {
       }
 
       // If no unit is found, check if there's any text at the end that might be a unit
-      const lastWord = cleanInput.split(/\s+/).pop();
       if (lastWord && lastWord !== cleanInput) {
         return {
           unit: '',
@@ -58,30 +103,7 @@ export default function UnitConverter() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    setValue(inputValue);
-
-    if (inputValue.trim()) {
-      const { unit, error } = detectUnit(inputValue);
-      setDetectedUnit(unit);
-      setError(error || '');
-
-      if (unit) {
-        const numericValue = parseFloat(inputValue.replace(/[^0-9.-]/g, ''));
-        if (!isNaN(numericValue)) {
-          const result = convert(numericValue, unit);
-          setResult(result[0]);
-        } else {
-          setResult(null);
-        }
-      } else {
-        setResult(null);
-      }
-    } else {
-      setDetectedUnit('');
-      setError('');
-      setResult(null);
-    }
+    setValue(e.target.value);
   };
 
   const getUnitPatterns = (unit: Unit) => {
@@ -136,7 +158,7 @@ export default function UnitConverter() {
       </div>
 
       <div className="result-container">
-        {result && (
+        {result && !error && (
           <div className="result-card">
             <p className="result-value">{result.formattedValue}</p>
           </div>
