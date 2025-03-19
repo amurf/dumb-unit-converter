@@ -71,19 +71,21 @@ export default function UnitConverter() {
       // Check if the input ends with the unit symbol
       // For Fahrenheit and Celsius, check for both with and without degree symbol
       if (symbol === '°f') {
-        return cleanInput.endsWith('f') || cleanInput.endsWith('°f');
+        return cleanInput.endsWith('f') || cleanInput.endsWith('°f') || cleanInput.endsWith('fs') || cleanInput.endsWith('°fs');
       }
       if (symbol === '°c') {
-        return cleanInput.endsWith('c') || cleanInput.endsWith('°c');
+        return cleanInput.endsWith('c') || cleanInput.endsWith('°c') || cleanInput.endsWith('cs') || cleanInput.endsWith('°cs');
       }
-      return cleanInput.endsWith(symbol);
+      // For other units, try both with and without trailing 's'
+      return cleanInput.endsWith(symbol) || cleanInput.endsWith(symbol + 's');
     });
 
     if (!unit) {
       // Try to match against unit names as well
       const unitByName = convertibleUnits.find(u => {
         const name = u.name.toLowerCase();
-        return cleanInput.endsWith(name);
+        // Try both singular and plural forms of the name
+        return cleanInput.endsWith(name) || cleanInput.endsWith(name + 's');
       });
 
       if (unitByName) {
@@ -94,7 +96,7 @@ export default function UnitConverter() {
       if (lastWord && lastWord !== cleanInput) {
         return {
           unit: '',
-          error: `Unknown unit: ${lastWord}. Try using a standard unit symbol (e.g., F/°F, C/°C, lb, fl oz)`
+          error: `Unknown unit: ${lastWord}. Try using a standard unit symbol (e.g., F/°F, C/°C, lb/lbs, fl oz)`
         };
       }
     }
