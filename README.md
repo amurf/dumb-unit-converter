@@ -1,15 +1,13 @@
-# Recipe Measurement Converter
+# Dumb Unit Converter
 
-A modern web application for converting recipe measurements between metric and imperial units. Built with Next.js, TypeScript, and Tailwind CSS.
+A modern web application that converts any unit to the smartest unit. Built with Next.js, TypeScript, and Tailwind CSS.
 
 ## Features
 
-- Convert between metric and imperial measurements
-- Support for volume (liquid) and weight (dry) measurements
-- Temperature conversion
+- Convert any unit to the smartest unit
 - Clean, modern UI with responsive design
 - Real-time conversion results
-- Preferred unit suggestions for easy measurement
+- Simple and intuitive interface
 
 ## Getting Started
 
@@ -49,7 +47,7 @@ src/
 │   └── globals.css        # Global styles
 ├── components/            # React components
 │   ├── ui/               # Reusable UI components
-│   └── recipe/           # Recipe-specific components
+│   └── unit/             # Unit conversion components
 └── lib/                  # Business logic
     ├── constants.ts      # Unit definitions
     ├── conversion.ts     # Conversion logic
