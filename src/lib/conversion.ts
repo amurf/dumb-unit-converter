@@ -98,6 +98,11 @@ const scaleToAppropriateUnit = (value: number, type: MeasurementType): Unit => {
       return UNITS.find(u => u.symbol === 'cm')!;
     }
 
+    // For distances less than 1 m, use centimeters
+    if (valueInMeters < 1) {
+      return UNITS.find(u => u.symbol === 'cm')!;
+    }
+
     // For distances less than 1 km, use meters
     if (value < 1) {
       return metersUnit;
