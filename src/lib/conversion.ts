@@ -47,6 +47,12 @@ const getStandardUnit = (type: MeasurementType): Unit => {
       return UNITS.find(u => u.symbol === '°C')!;
     case 'distance':
       return UNITS.find(u => u.symbol === 'km')!;
+    case 'area':
+      return UNITS.find(u => u.symbol === 'km²')!;
+    case 'speed':
+      return UNITS.find(u => u.symbol === 'km/h')!;
+    case 'power':
+      return UNITS.find(u => u.symbol === 'kW')!;
     default:
       throw new Error(`Unknown measurement type: ${type}`);
   }
@@ -65,6 +71,37 @@ const scaleToAppropriateUnit = (value: number, type: MeasurementType): Unit => {
   // For weights less than 0.1 kg, use grams
   if (type === 'weight' && value < 0.1) {
     return UNITS.find(u => u.symbol === 'g')!;
+  }
+
+  // For areas less than 1 km², use square meters
+  if (type === 'area' && value < 1) {
+    return UNITS.find(u => u.symbol === 'm²')!;
+  }
+
+  // For speeds less than 1 km/h, use meters per second
+  if (type === 'speed' && value < 1) {
+    return UNITS.find(u => u.symbol === 'm/s')!;
+  }
+
+  // For power less than 1 kW, use watts
+  if (type === 'power' && value < 1) {
+    return UNITS.find(u => u.symbol === 'W')!;
+  }
+
+  // For distances, convert to meters first for easier comparison
+  if (type === 'distance') {
+    const metersUnit = UNITS.find(u => u.symbol === 'm')!;
+    const valueInMeters = convertValue(value, getStandardUnit(type), metersUnit);
+
+    // For distances less than 0.1 m, use centimeters
+    if (valueInMeters < 0.1) {
+      return UNITS.find(u => u.symbol === 'cm')!;
+    }
+
+    // For distances less than 1 km, use meters
+    if (value < 1) {
+      return metersUnit;
+    }
   }
 
   const availableUnits = UNITS.filter(unit =>

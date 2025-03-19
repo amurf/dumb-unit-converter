@@ -1,4 +1,4 @@
-export type MeasurementType = 'volume' | 'weight' | 'temperature' | 'distance';
+export type MeasurementType = 'volume' | 'weight' | 'temperature' | 'distance' | 'area' | 'speed' | 'power';
 
 export interface Unit {
   name: string;

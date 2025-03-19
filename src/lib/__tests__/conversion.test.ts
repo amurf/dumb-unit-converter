@@ -72,10 +72,106 @@ describe('Unit Conversion Tests', () => {
       expect(result[0].unit.symbol).toBe('km');
     });
 
-    test('miles to kilometers (multiple miles)', () => {
-      const result = convert(5, 'mi');
-      expect(result[0].value).toBeCloseTo(8.0467, 3);
+    test('yards to kilometers', () => {
+      const result = convert(1000, 'yd');
+      expect(result[0].value).toBeCloseTo(0.9144, 3);
       expect(result[0].unit.symbol).toBe('km');
+    });
+
+    test('feet to meters', () => {
+      const result = convert(3.28084, 'ft');
+      expect(result[0].value).toBeCloseTo(1, 3);
+      expect(result[0].unit.symbol).toBe('m');
+    });
+
+    test('inches to centimeters', () => {
+      const result = convert(1, 'in');
+      expect(result[0].value).toBeCloseTo(2.54, 3);
+      expect(result[0].unit.symbol).toBe('cm');
+    });
+  });
+
+  // Area conversions
+  describe('Area Conversions', () => {
+    test('square miles to square kilometers', () => {
+      const result = convert(1, 'mi²');
+      expect(result[0].value).toBeCloseTo(2.58999, 3);
+      expect(result[0].unit.symbol).toBe('km²');
+    });
+
+    test('acres to square meters', () => {
+      const result = convert(1, 'ac');
+      expect(result[0].value).toBeCloseTo(4046.86, 3);
+      expect(result[0].unit.symbol).toBe('m²');
+    });
+
+    test('square yards to square meters', () => {
+      const result = convert(1, 'yd²');
+      expect(result[0].value).toBeCloseTo(0.836127, 3);
+      expect(result[0].unit.symbol).toBe('m²');
+    });
+
+    test('square feet to square meters', () => {
+      const result = convert(10.764, 'ft²');
+      expect(result[0].value).toBeCloseTo(1, 3);
+      expect(result[0].unit.symbol).toBe('m²');
+    });
+  });
+
+  // Speed conversions
+  describe('Speed Conversions', () => {
+    test('miles per hour to kilometers per hour', () => {
+      const result = convert(1, 'mph');
+      expect(result[0].value).toBeCloseTo(1.60934, 3);
+      expect(result[0].unit.symbol).toBe('km/h');
+    });
+
+    test('feet per second to meters per second', () => {
+      const result = convert(3.28084, 'ft/s');
+      expect(result[0].value).toBeCloseTo(1, 3);
+      expect(result[0].unit.symbol).toBe('m/s');
+    });
+
+    test('meters per second to kilometers per hour', () => {
+      const result = convert(1, 'm/s');
+      expect(result[0].value).toBeCloseTo(3.6, 3);
+      expect(result[0].unit.symbol).toBe('km/h');
+    });
+  });
+
+  // Power conversions
+  describe('Power Conversions', () => {
+    test('horsepower to kilowatts', () => {
+      const result = convert(1, 'hp');
+      expect(result[0].value).toBeCloseTo(0.7457, 3);
+      expect(result[0].unit.symbol).toBe('kW');
+    });
+
+    test('watts to kilowatts', () => {
+      const result = convert(1000, 'W');
+      expect(result[0].value).toBeCloseTo(1, 3);
+      expect(result[0].unit.symbol).toBe('kW');
+    });
+  });
+
+  // Additional weight conversions
+  describe('Additional Weight Conversions', () => {
+    test('tons to kilograms', () => {
+      const result = convert(1, 'ton');
+      expect(result[0].value).toBeCloseTo(907.185, 3);
+      expect(result[0].unit.symbol).toBe('kg');
+    });
+
+    test('grains to grams', () => {
+      const result = convert(15.4324, 'gr');
+      expect(result[0].value).toBeCloseTo(1, 3);
+      expect(result[0].unit.symbol).toBe('g');
+    });
+
+    test('hundredweight to kilograms', () => {
+      const result = convert(1, 'cwt');
+      expect(result[0].value).toBeCloseTo(45.3592, 3);
+      expect(result[0].unit.symbol).toBe('kg');
     });
   });
 
@@ -124,3 +220,4 @@ describe('Unit Conversion Tests', () => {
     });
   });
 });
+
